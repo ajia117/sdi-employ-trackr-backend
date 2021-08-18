@@ -3,7 +3,7 @@ const pgp = pgPromise({});
 const dbParams = {
     platform: "postgresql",
     host: "localhost",
-    port: "50919",
+    port: "49549",
     username: "postgres",
     password: "mysecretpassword",
     database: "timelog"
