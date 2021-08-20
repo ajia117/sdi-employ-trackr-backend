@@ -146,10 +146,11 @@ app.get('/timelogs', (req, res) => {
 
 app.get('/timelog/:id', (req, res) => {
     let id = req.params.id
-    db.any(`SELECT * FROM Time_Table WHERE "employee_id"=${id} ORDER BY "sign_in_id" DESC;`)
+    db.any(`SELECT * FROM time_table WHERE "employee_id"=${id} ORDER BY "sign_in_id" DESC;`)
         .then(list => {
             var data = list;
-            db.any(`SELECT * FROM Users WHERE "employee_id"=${id};`)
+            console.log(data);
+            db.any(`SELECT * FROM users WHERE "employee_id"=${id};`)
                 .then((empdata) => {
                     let emp = empdata[0]
                     let sendArr = [];
@@ -171,18 +172,23 @@ app.get('/timelog/:id', (req, res) => {
                             }
                             let totalPay = Math.round((Number(emp.rate.substring(1,emp.rate.length)) * hoursWorked) * 100) / 100
                             let hoursArr = ((`${hoursWorked}`).split('.'))
-                            if (hoursArr[1].length < 2) {
+                            if (hoursArr[1] && hoursArr[1].length < 2) {
                                 while (hoursArr[1].length < 2) {
                                     hoursArr[1] += '0'
                                 }
                             }
-                            let hoursStr = `${hoursArr[0]}.${hoursArr[1].substring(0,2)}`
+                            let hoursStr = hoursWorked //`${hoursArr[0]}.${hoursArr[1].substring(0,2)}`
                             let payArr = ((`${totalPay}`).split('.'))
+                            if(!payArr[1]) {
+                                payArr[1] = '00';
+                            }
+                            /*
                             if (payArr[1].length < 2) {
                                 while (payArr[1].length < 2) {
                                     payArr[1] += '0'
                                 }
                             }
+                            */
                             let payStr = `$${payArr[0]}.${payArr[1].substring(0,2)}`
                             buildObj = {
                                 employee_id: id,
